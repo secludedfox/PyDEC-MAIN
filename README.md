@@ -32,7 +32,7 @@ Set the `callsign` value to your staions callsign.
 Save the file and then close it
 
 
-## Stating PyDEC
+## Starting PyDEC
 
 You do have to start the scrips in a certain order so there isn’t a chance of everything burning down
 
@@ -40,7 +40,7 @@ Run the `StartAudio.bat` file first.
 
 It will ask what audio output you want to use.
 
-Simply select the output by inputting the number on the list and hitting enter\
+Simply select the output by inputting the number on the list and hitting enter
 
 Now run `StartPyDEC.bat`
 
