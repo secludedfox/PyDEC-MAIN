@@ -15,7 +15,7 @@ This guide is for mainly for installing on windows (since it is being developed 
 
 ## pip Install Command
 
-`py -m pip install colorama wave sounddevice soundfile pydub scipy numpy`
+`py -m pip install colorama wave sounddevice soundfile pydub scipy numpy EASGen`
 
 This command *should* install all the libraries that are needed, but this list may not be sufficient for your installation.
 
