@@ -1,4 +1,4 @@
-import time, sys, colorama, shutil
+import time, sys, colorama, shutil, json
 from EASGen import EASGen
 
 
@@ -48,7 +48,17 @@ def setup():
 
 
 setup()
-staion = "WAKF/PYD"
+
+with open("config.json", "r") as jfile:
+    config_file = jfile.read()
+    jfile.close()
+
+config_data = json.loads(config_file)
+
+staion = str(config_data['callsign'])
+
+
+
 
 while True:
     time.sleep(3)
