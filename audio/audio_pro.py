@@ -1,6 +1,6 @@
 import sounddevice as sd
 import soundfile as sf
-import datetime, time, threading, colorama, sys
+import datetime, time, threading, colorama, sys, os
 # PyDEC Audio Handler, Written by Aaron s#8638 :3
 
 
@@ -46,6 +46,23 @@ def play_all():
     global play_done
     device = dev
     np_message = colorama.Fore.BLUE + "[Audio]" + colorama.Fore.LIGHTBLACK_EX + "  Playing: "
+
+    # If there is a pre-alert sound
+    if over_ride == False:
+        if or_go == False: #Don't play when overriding audio
+            if os.path.exists("audio/pre.wav"):
+                file = "audio/pre.wav"
+                data, fs = sf.read(file, dtype='float32')
+                dur = round(int(sf.info(file).duration))
+                sd.default.reset()
+                sd.default.device = device
+                print(np_message + "PreAlert Audio")
+                sd.play(data, fs)
+                sd.wait()
+            
+
+
+
 
     # Play headers
     if over_ride == False:

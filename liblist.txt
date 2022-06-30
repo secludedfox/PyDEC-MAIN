@@ -1,0 +1,12 @@
+List of libraries that might/will have to be installed...
+
+colorama, wave, sounddevice, soundfile, pydub, scipy, numpy
+
+
+Windows install Command (Depends on installation):
+	py -m pip install colorama wave sounddevice soundfile pydub scipy numpy
+
+
+Linux:
+    python3 -m pip install colorama wave sounddevice soundfile pydub scipy numpy
+    
