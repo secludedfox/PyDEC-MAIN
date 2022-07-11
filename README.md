@@ -28,7 +28,7 @@ This command *should* install all the libraries that are needed, but this list m
 
 
 
-Open `config.json` with a texteditor and you'll see only one parameter to change.
+Open `config.json` with a texteditor
 
 Set the `callsign` value to your stations callsign.
 
