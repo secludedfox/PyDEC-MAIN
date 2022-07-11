@@ -13,6 +13,8 @@ This is a **very** early version and has very little features
 # Installation
 This guide is for mainly for installing on windows (since it is being developed on it) but PyDEC *should* work on Linux
 
+<br />
+
 ## pip Install Command
 
 `py -m pip install colorama wave sounddevice soundfile pydub scipy numpy EASGen EAS2Text discord_webhook`
@@ -35,7 +37,7 @@ Set the `callsign` value to your stations callsign.
 
 <br />
 
-The `logger_color` setting is the color used in the embed for the received alert embed
+The `logger_color` setting is the color used in the embed for the received alert embed. (This is set by using a HEX color code. Just remove the #)
 
 ![Alt text](img/image00.png)
 
