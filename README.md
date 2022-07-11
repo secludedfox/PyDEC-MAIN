@@ -49,7 +49,7 @@ The `logger_color` setting is the color used in the embed for the received alert
 
 <br />
 
-`embed_author` is the text at the top of an alert.
+`embed_author` is the text at the top of the embed.
 \
 `embed_author_link` makes that text send you to a website when clicked.
 
