@@ -15,7 +15,7 @@ This guide is for mainly for installing on windows (since it is being developed 
 
 ## pip Install Command
 
-`py -m pip install colorama wave sounddevice soundfile pydub scipy numpy EASGen`
+`py -m pip install colorama wave sounddevice soundfile pydub scipy numpy EASGen EAS2Text discord_webhook`
 
 This command *should* install all the libraries that are needed, but this list may not be sufficient for your installation.
 
@@ -28,7 +28,7 @@ This command *should* install all the libraries that are needed, but this list m
 
 Open `config.json` with a texteditor and you'll see only one parameter to change.
 
-Set the `callsign` value to your staions callsign.
+Set the `callsign` value to your stations callsign.
 
 **NOTE:** The callsign has to be **8 characters** long and not include a `-`(dash)
 
