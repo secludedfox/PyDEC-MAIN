@@ -20,17 +20,58 @@ This guide is for mainly for installing on windows (since it is being developed 
 This command *should* install all the libraries that are needed, but this list may not be sufficient for your installation.
 
 
+<br />
 
 ## Config File
+
+
 
 Open `config.json` with a texteditor and you'll see only one parameter to change.
 
 Set the `callsign` value to your staions callsign.
 
-**NOTE:** The callsign has to be **8 characters** long and not include a `-` (dash)
+**NOTE:** The callsign has to be **8 characters** long and not include a `-`(dash)
 
-Save the file and then close it
 
+<br />
+
+The `logger_color` setting is the color used in the embed for the received alert embed
+
+![Alt text](img/image00.png)
+
+
+<br /> 
+
+`timezone_offset` is used to convert the UTC time of an alert to your timezone. For example, `-4` would be for EDT (This is used in the logger)
+
+
+<br />
+
+`embed_author` is the text at the top of an alert.
+\
+`embed_author_link` makes that text send you to a website when clicked.
+
+![Alt text](img/image01.png)
+
+
+<br />
+
+`webhook_username` sets the username of the webhook. Pretty simple :P
+
+![Alt text](img/image02.png)
+
+
+<br />
+
+`logger_webhook` is where you put the link(s) for your webhook(s). If your using multiple webhook links you'll need to use a json array/list.
+
+
+<br />
+
+Now save the config file and close it
+
+
+<br />
 
 ## Starting PyDEC
 
@@ -55,3 +96,16 @@ Then run `StartMon1.bat`
 This script is now waiting for alerts and will send then so the main script, which then sends it to the playback script
 
 ## **Congrats, PyDEC is now running!**
+
+
+<br />
+
+## Release Notes
+- Added discord logging
+- Added a duplicate alert check
+
+If you have any isses or request(s) just send me a discord DM or add something under the "issues" tab 
+
+^w^
+
+
