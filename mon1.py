@@ -1,13 +1,31 @@
-import subprocess, sys, threading, queue, colorama, os, wave, contextlib, time
+import subprocess, sys, threading, queue, colorama, os, wave, contextlib, time, json, datetime
+from discord_webhook import DiscordWebhook, DiscordEmbed
 import sounddevice as sd
 import soundfile as sf
 from pydub import AudioSegment
 from scipy.fft import *
 from scipy.io import wavfile
-from EASGen import EASGen
 import numpy
 assert numpy
 # PyDEC Alert Recorder, Written by Aaron s#8638 :3
+
+
+with open("config.json", "r") as jfile:
+    config_file = jfile.read()
+    jfile.close()
+
+config_data = json.loads(config_file)
+
+webhook_links = config_data['logger_webhook']
+webhook_username = config_data['webhook_username']
+embed_author = config_data['embed_author']
+embed_author_link = config_data['embed_author_link']
+embed_color = config_data['logger_color']
+
+
+
+
+
 
 def setup():
     global platform
@@ -45,9 +63,6 @@ def writefile(loc, lestr):
         f.close()
 
 
-# def gen_headers(ZCZC):
-#     headers = EASGen.genEAS(header=ZCZC, attentionTone=True, endOfMessage=False, sampleRate=48000)
-#     headers.export("Monitor_1/tmp/encode.wav", format="wav")
 
 
 def rm_end():
@@ -204,6 +219,13 @@ def ZCZC_test(inp):
         return False
     elif len(inp[num + 4]) != 8:
         return False
+    elif len(inp[0]) != 4: #ZCZC
+        return False
+    elif len(inp[1]) != 3: #"EAS"
+        return False
+    elif len(inp[2]) != 3: #"DMO"
+        return False
+
 
 
     if num == 1 and len(inp[3]) == 11:
@@ -219,6 +241,43 @@ def ZCZC_test(inp):
                 return False
     else:
         return False
+
+
+
+def gen_receipt():
+    dtnow = datetime.datetime.now()
+
+    tds = f"{dtnow.strftime(f'%I')}:{dtnow.strftime(f'%M')}:{dtnow.strftime(f'%S')} {dtnow.strftime(f'%p')}"
+
+    receipt = f"Received at {tds} on {dtnow.strftime(f'%A')} {dtnow.strftime(f'%B')} {dtnow.strftime(f'%d')} {dtnow.strftime(f'%Y')}"
+
+    return receipt
+
+
+def discordlog(ZCZC):
+    webhook = DiscordWebhook(url=webhook_links, username=webhook_username)
+
+    embed = DiscordEmbed(title="Emergency Alert Received", color=embed_color)
+
+    with open("discord_bin/clock.png", "rb") as f:
+        webhook.add_file(file=f.read(), filename='clock.png')
+        f.close()
+
+    embed.set_thumbnail(url='attachment://clock.png')
+    embed.set_author(name=embed_author, url=embed_author_link)
+
+    embedreceipt = f"```{gen_receipt()}```"
+    ZCZC = f"```{ZCZC}```"
+
+    embed.add_embed_field(name="Receipt:", value=embedreceipt,inline=False)
+    embed.add_embed_field(name="ZCZC Data:", value=ZCZC,inline=False)
+    embed.set_footer(text='© PyDEC')
+    embed.set_timestamp()
+    
+    webhook.add_embed(embed)
+    webhook.execute()
+
+
 
 
 def record():
@@ -271,6 +330,8 @@ if __name__ == "__main__":
                 ZCZCheader = decode
                 print(colorama.Fore.BLUE + "[Monitor]" + colorama.Fore.LIGHTBLACK_EX + "  ZCZC Check OK")
 
+                discordlog(decode) #Log to discord
+                
                 stop_threads = False
                 t1 = threading.Thread(target = record)
                 t1.start()

@@ -1,3 +1,15 @@
 {
-    "callsign": "WAKF/PYD"
+    "callsign": "WAKF/PYD",
+
+    "logger_color": "00d897",
+    
+    "timezone_offset": -4,
+
+    "embed_author": "WAKF PyDEC Alert Logs",
+
+    "embed_author_link": "https://wakf.nerpeas.com",
+
+    "webhook_username": "PyDEC Logger",
+
+    "logger_webhook": "https://discord.com/api/webhooks/your_webhook_here!"
 }

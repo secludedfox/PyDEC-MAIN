@@ -8,9 +8,20 @@ def setup():
     global dev
 
     if sys.platform == "win32":
-        print("\n[Setup]  Windows Color Mode...\n\n")
         colorama.init(convert=True)
-        print(colorama.Fore.CYAN)
+        print("\n[Setup]  Windows Color Mode...")
+
+
+    with open("var/over_ride.var", "r+") as of:
+        of.truncate(0)
+        of.close()
+
+    with open("var/new_audio.var", "r+") as na:
+        na.truncate(0)
+        na.close()
+
+    print("\n[Setup]  Cleared Files...\n\n")
+    print(colorama.Fore.CYAN)
 
 
     device_list_name = []
@@ -39,6 +50,10 @@ def setup():
     output_device = device_list_name[user_input]["name"]
     dev = output_device
     print(colorama.Fore.BLUE + "\n[Audio]" + colorama.Fore.GREEN + "  Audio Output Device Set To: " + output_device)
+
+
+
+    
 
 
 
