@@ -20,6 +20,10 @@ def setup():
         na.truncate(0)
         na.close()
 
+    with open("var/working.var", "w") as wo:
+        wo.write("False")
+        wo.close()
+
     print("\n[Setup]  Cleared Files...\n\n")
     print(colorama.Fore.CYAN)
 
