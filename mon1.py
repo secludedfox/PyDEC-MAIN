@@ -38,11 +38,11 @@ def setup():
 
     print("[Setup]  Using Default Audio Input...")
     print("[Setup]  Cleaning Up Old Files...")
-    files = os.listdir('Monitor_1/tmp')
+    files = os.listdir('monitor_1/tmp')
     files_to_del = ["out.wav", "rmend0.wav", "alert.wav"]
     for name in files:
         if name in files_to_del:
-            dirr = "Monitor_1/tmp/" + name
+            dirr = "monitor_1/tmp/" + name
             os.remove(dirr)
 
 
@@ -66,7 +66,7 @@ def writefile(loc, lestr):
 
 
 def rm_end():
-    audio = AudioSegment.from_file("Monitor_1/tmp/out.wav")
+    audio = AudioSegment.from_file("monitor_1/tmp/out.wav")
     lengthaudio = len(audio)
     start = 0
     threshold = lengthaudio - 1200
@@ -74,7 +74,7 @@ def rm_end():
     counter = 0
     end += threshold
     chunk = audio[start:end]
-    filename = f'Monitor_1/tmp/rmend{counter}.wav'
+    filename = f'monitor_1/tmp/rmend{counter}.wav'
     chunk.export(filename, format="wav")
     counter +=1
     start += threshold
@@ -82,16 +82,16 @@ def rm_end():
     
 
 def clr_dir():
-    files = os.listdir('Monitor_1/tmp')
+    files = os.listdir('monitor_1/tmp')
     for name in files:
         if name != "alert.wav": #Make sure to not delete the output
-            dirr = "Monitor_1/tmp/" + name
+            dirr = "monitor_1/tmp/" + name
             os.remove(dirr)
     print(colorama.Fore.BLUE + "[Monitor]" + colorama.Fore.LIGHTBLACK_EX + "  Cleaned Up tmp Directory")
 
 
 def get_len():
-    fname = 'Monitor_1/tmp/rmend0.wav'
+    fname = 'monitor_1/tmp/rmend0.wav'
     with contextlib.closing(wave.open(fname,'r')) as f:
         frames = f.getnframes()
         rate = f.getframerate()
@@ -144,7 +144,7 @@ def rm_attn_tone():
         start = e * val
         offset = start + val
         timelist.append(start)
-        frequency = freq('Monitor_1/tmp/rmend0.wav', start, offset)
+        frequency = freq('monitor_1/tmp/rmend0.wav', start, offset)
         freqlist.append(frequency)
 
 
@@ -170,7 +170,7 @@ def rm_attn_tone():
     
     if(found == None):
         # print("Cutting Audio...")
-        audio = AudioSegment.from_file('Monitor_1/tmp/rmend0.wav')
+        audio = AudioSegment.from_file('monitor_1/tmp/rmend0.wav')
         lengthaudio = len(audio)
         cut = 300 * end_point
         start = cut
@@ -180,7 +180,7 @@ def rm_attn_tone():
         while start < len(audio):
             end += threshold
             chunk = audio[start:end]
-            filename = f'Monitor_1/tmp/alert.wav'
+            filename = f'monitor_1/tmp/alert.wav'
             chunk.export(filename, format="wav")
             counter +=1
             start += threshold
@@ -192,7 +192,7 @@ def rm_attn_tone():
             end_point = gl // 2
 
         # print("Cutting Audio...")
-        audio = AudioSegment.from_file('Monitor_1/tmp/rmend0.wav')
+        audio = AudioSegment.from_file('monitor_1/tmp/rmend0.wav')
         lengthaudio = len(audio)
         cut = 300 * end_point
         start = cut
@@ -202,7 +202,7 @@ def rm_attn_tone():
         while start < len(audio):
             end += threshold
             chunk = audio[start:end]
-            filename = f'Monitor_1/tmp/alert.wav'
+            filename = f'monitor_1/tmp/alert.wav'
             chunk.export(filename, format="wav")
             counter +=1
             start += threshold
@@ -271,7 +271,7 @@ def discordlog(ZCZC):
 
     embed.add_embed_field(name="Receipt:", value=embedreceipt,inline=False)
     embed.add_embed_field(name="ZCZC Data:", value=ZCZC,inline=False)
-    embed.set_footer(text='© PyDEC')
+    embed.set_footer(text='PyDEC')
     embed.set_timestamp()
     
     webhook.add_embed(embed)
@@ -285,7 +285,7 @@ def record():
 
         sd.default.reset()
         samplerate = 11025
-        file = "Monitor_1/tmp/out.wav"
+        file = "monitor_1/tmp/out.wav"
         q = queue.Queue()
 
         def callback(indata, frames, time, status):
@@ -312,7 +312,7 @@ if __name__ == "__main__":
 
 
     if platform == "win":
-        source_process = subprocess.Popen(["Monitor_1/multimon-ng-WIN32/multimon-ng.exe", "-a", "EAS"], stdout=subprocess.PIPE)
+        source_process = subprocess.Popen(["monitor_1/multimon-ng-WIN32/multimon-ng.exe", "-a", "EAS"], stdout=subprocess.PIPE)
     else:
         source_process = subprocess.Popen(["multimon-ng", "-a", "EAS"], stdout=subprocess.PIPE)
 
@@ -351,7 +351,7 @@ if __name__ == "__main__":
 
 
                 writefile("com/alert_des.var", "N/A") #Alert Description
-                writefile("com/message_loc.var", "Monitor_1/tmp/alert.wav") #Alert audio message location
+                writefile("com/message_loc.var", "monitor_1/tmp/alert.wav") #Alert audio message location
                 writefile("com/alert_ZCZC.var", ZCZCheader) #Alert ZCZC str
 
                 if ready_stat() == True: #If processing alert

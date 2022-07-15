@@ -6,7 +6,7 @@ from discord_webhook import DiscordWebhook, DiscordEmbed
 
 def gen_headers(ZCZC):
     headers = EASGen.genEAS(header=ZCZC, attentionTone=True, endOfMessage=False, sampleRate=48000)
-    headers.export("Audio/audio/encode.wav", format="wav")
+    headers.export("audio/audio/encode.wav", format="wav")
 
 
 def recompile_ZCZC(station, ZCZC):
@@ -240,7 +240,7 @@ if __name__ == "__main__":
                 print(f"{colorama.Fore.BLUE}[PyDEC]{colorama.Fore.LIGHTRED_EX}  Duplicate Alert:{colorama.Fore.LIGHTBLACK_EX} {alert_ZCZC}")
             else:
                 addalertlst(alert_ZCZC)
-                if readfile("Audio/var/working.var") == "False":
+                if readfile("audio/var/working.var") == "False":
                     print(colorama.Fore.BLUE + "\n[PyDEC]" + colorama.Fore.LIGHTBLACK_EX + "  New Alert: " + alert_ZCZC)
 
                     alert_ZCZC = recompile_ZCZC(staion, alert_ZCZC)
@@ -249,10 +249,10 @@ if __name__ == "__main__":
 
                     gen_headers(alert_ZCZC)
 
-                    shutil.copyfile(message_location, "Audio/audio/alert.wav")
+                    shutil.copyfile(message_location, "audio/audio/alert.wav")
 
-                    writefile("Audio/var/new_audio.var", "True")
-                elif readfile("Audio/var/working.var") == "True":
+                    writefile("audio/var/new_audio.var", "True")
+                elif readfile("audio/var/working.var") == "True":
                     print(colorama.Fore.BLUE + "\n[PyDEC]" + colorama.Fore.LIGHTBLACK_EX + "  New Alert: " + alert_ZCZC)
 
                     print(colorama.Fore.BLUE + "[PyDEC]" + colorama.Fore.LIGHTRED_EX + "  Overriding Alert!")
@@ -263,9 +263,9 @@ if __name__ == "__main__":
 
                     gen_headers(alert_ZCZC)
 
-                    shutil.copyfile(message_location, "Audio/audio/alert.wav")
+                    shutil.copyfile(message_location, "audio/audio/alert.wav")
 
-                    writefile("Audio/var/over_ride.var", "True")
+                    writefile("audio/var/over_ride.var", "True")
             writefile("com/alertready.var", "False")
             writefile("com/working.var", "False")
 
