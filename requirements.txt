@@ -1,0 +1,10 @@
+colorama
+wave
+sounddevice
+soundfile
+pydub
+scipy
+numpy
+EASGen
+EAS2Text
+discord_webhook
