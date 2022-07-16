@@ -77,7 +77,7 @@ Now save the config file and close it
 
 ## Starting PyDEC
 
-You do have to start the scrips in a certain order so there isn’t a chance of everything burning down
+You do have to start the scrips in a certain order so none of them conflict
 
 Run the `StartAudio.bat` file first.
 
@@ -87,11 +87,13 @@ Simply select the output by inputting the number on the list and hitting enter
 
 Now run `StartPyDEC.bat`
 
-This window will look like it's doing nothing but no logging/prints have been added to this file, *yet*...
+This window should say `Waiting For Alerts...`
 
 Next, you'll need to look at your default audio input.
 
-The monitor script **only** uses it, so make sure it is set to the correct one you want to use
+The monitor script **only** uses it, so make sure it is set to the correct one you want to use.
+\
+(We reccomend using a virtual audio cable to monitor a stream)
 
 Then run `StartMon1.bat` 
 
@@ -105,6 +107,7 @@ This script is now waiting for alerts and will send then so the main script, whi
 ## Release Notes
 - Added discord logging
 - Added a duplicate alert check
+- Fixed minor bugs
 
 If you have any isses or request(s) just send me a discord DM or add something under the "issues" tab 
 
