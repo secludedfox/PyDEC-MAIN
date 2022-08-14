@@ -1,15 +1,21 @@
 {
     "callsign": "WAKF/PYD",
 
+
+    "enable_discord_logger" : true, 
     "logger_color": "00d897",
-    
     "timezone_offset": -4,
-
     "embed_author": "WAKF PyDEC Alert Logs",
-
     "embed_author_link": "https://wakf.nerpeas.com",
-
     "webhook_username": "PyDEC Logger",
+    "logger_webhook": "https://webhookthing",
 
-    "logger_webhook": "https://discord.com/api/webhooks/your_webhook_here!"
+
+    "enable_email_logger": false,
+    "email_server": "smtp.gmail.com",
+    "email_server_port" : 587,
+    "email_user": "test@gmail.com",
+    "email_user_pass": "haxs",
+    "email_sendto": "test2@gmail.com"
+
 }

@@ -53,7 +53,7 @@ def setup():
 
     output_device = device_list_name[user_input]["name"]
     dev = output_device
-    print(colorama.Fore.BLUE + "\n[Audio]" + colorama.Fore.GREEN + "  Audio Output Device Set To: " + output_device)
+    print(f"{colorama.Fore.BLUE}\n[Audio]{colorama.Fore.GREEN}  Audio Output Device Set To: {output_device}")
 
 
 
@@ -66,7 +66,7 @@ def play_all():
     device = dev
     np_message = colorama.Fore.BLUE + "[Audio]" + colorama.Fore.LIGHTBLACK_EX + "  Playing: "
 
-    # If there is a pre-alert sound
+    # If there is a pre-alert soundfile
     if over_ride == False:
         if or_go == False: #Don't play when overriding audio
             if os.path.exists("audio/pre.wav"):
@@ -75,7 +75,7 @@ def play_all():
                 dur = round(int(sf.info(file).duration))
                 sd.default.reset()
                 sd.default.device = device
-                print(np_message + "PreAlert Audio")
+                print(f"{np_message}PreAlert Audio")
                 sd.play(data, fs)
                 sd.wait()
             
@@ -90,7 +90,7 @@ def play_all():
         dur = round(int(sf.info(file).duration))
         sd.default.reset()
         sd.default.device = device
-        print(np_message + "ZCZC + EBS")
+        print(f"{np_message}ZCZC + EBS")
         sd.play(data, fs)
 
         d = datetime.datetime.now()
@@ -109,7 +109,7 @@ def play_all():
         dur = round(int(sf.info(file).duration))
         sd.default.reset()
         sd.default.device = device
-        print(np_message + "Alert Audio/Message")
+        print(f"{np_message}Alert Audio/Message")
         sd.play(data, fs)
 
         d = datetime.datetime.now()
@@ -128,7 +128,7 @@ def play_all():
         dur = round(int(sf.info(file).duration))
         sd.default.reset()
         sd.default.device = device
-        print(np_message + "EOMs")
+        print(f"{np_message}EOMs")
         sd.play(data, fs)
 
         d = datetime.datetime.now()
@@ -140,8 +140,21 @@ def play_all():
                 sd.stop()
                 break
 
+    # If there is a post-alert soundfile
     if over_ride == False:
-        print(colorama.Fore.BLUE + "[Audio]" + colorama.Fore.GREEN + "  Finished Playing Alert\n")
+        if or_go == False: #Don't play when overriding audio
+            if os.path.exists("audio/post.wav"):
+                file = "audio/post.wav"
+                data, fs = sf.read(file, dtype='float32')
+                dur = round(int(sf.info(file).duration))
+                sd.default.reset()
+                sd.default.device = device
+                print(f"{np_message}PostAlert Audio")
+                sd.play(data, fs)
+                sd.wait()
+
+    if over_ride == False:
+        print(f"{colorama.Fore.BLUE}[Audio]{colorama.Fore.GREEN}  Finished Playing Alert\n")
         play_done = True
         with open("var/working.var", "w") as wo:
             wo.write("False")
@@ -159,7 +172,7 @@ def eom_it():
     dur = round(int(sf.info(file).duration))
     sd.default.reset()
     sd.default.device = device
-    print(np_message + "EOMs")
+    print(f"{np_message}EOMs")
     sd.play(data, fs)
     sd.wait()
 
@@ -168,7 +181,7 @@ def eom_it():
 if __name__ == "__main__":
     setup()
     or_go = False
-    print(colorama.Fore.BLUE + "[Audio]" + colorama.Fore.GREEN + "  Waiting For Alerts...\n")
+    print(f"{colorama.Fore.BLUE}[Audio]{colorama.Fore.GREEN}  Waiting For Alerts...\n")
 
 
     while True:
@@ -202,7 +215,7 @@ if __name__ == "__main__":
                     of.close()
 
                 if of_stat == "True":
-                    print(colorama.Fore.BLUE + "[Audio]" + colorama.Fore.LIGHTRED_EX + "  Overriding Alert!")
+                    print(f"{colorama.Fore.BLUE}[Audio]{colorama.Fore.LIGHTRED_EX}  Overriding Alert!")
                     over_ride = True
                     t1.join()
                     with open("var/over_ride.var", "r+") as of:

@@ -1,3 +1,4 @@
+wheel
 colorama
 wave
 sounddevice

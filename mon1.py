@@ -16,6 +16,7 @@ with open("config.json", "r") as jfile:
 
 config_data = json.loads(config_file)
 
+disclogenable = config_data['enable_discord_logger']
 webhook_links = config_data['logger_webhook']
 webhook_username = config_data['webhook_username']
 embed_author = config_data['embed_author']
@@ -78,7 +79,7 @@ def rm_end():
     chunk.export(filename, format="wav")
     counter +=1
     start += threshold
-    print(colorama.Fore.BLUE + "[Monitor]" + colorama.Fore.LIGHTBLACK_EX + "  Removed Recording EOMs")
+    print(f"{colorama.Fore.BLUE}[Monitor]{colorama.Fore.LIGHTBLACK_EX}  Removed Recording EOMs")
     
 
 def clr_dir():
@@ -87,7 +88,7 @@ def clr_dir():
         if name != "alert.wav": #Make sure to not delete the output
             dirr = "monitor_1/tmp/" + name
             os.remove(dirr)
-    print(colorama.Fore.BLUE + "[Monitor]" + colorama.Fore.LIGHTBLACK_EX + "  Cleaned Up tmp Directory")
+    print(f"{colorama.Fore.BLUE}[Monitor]{colorama.Fore.LIGHTBLACK_EX}  Cleaned Up tmp Directory")
 
 
 def get_len():
@@ -207,7 +208,7 @@ def rm_attn_tone():
             counter +=1
             start += threshold
     
-    print(colorama.Fore.BLUE + "[Monitor]" + colorama.Fore.LIGHTBLACK_EX + "  Removed ATTN Tone")
+    print(f"{colorama.Fore.BLUE}[Monitor]{colorama.Fore.LIGHTBLACK_EX}  Removed ATTN Tone")
 
 
 def ZCZC_test(inp):
@@ -295,7 +296,7 @@ def record():
 
         with sf.SoundFile(file, mode='x', samplerate=samplerate,channels=2) as file:
             with sd.InputStream(samplerate=samplerate,channels=2,callback=callback):
-                print(colorama.Fore.BLUE + "[Monitor]" + colorama.Fore.LIGHTBLACK_EX + "  Recording!")
+                print(f"{colorama.Fore.BLUE}[Monitor]{colorama.Fore.LIGHTBLACK_EX}  Recording!")
                 while True:
                     file.write(q.get())
                     global stop_threads
@@ -316,34 +317,36 @@ if __name__ == "__main__":
     else:
         source_process = subprocess.Popen(["multimon-ng", "-a", "EAS"], stdout=subprocess.PIPE)
 
-    print(colorama.Fore.BLUE + "[Monitor]" + colorama.Fore.GREEN + "  Ready For Alerts...\n" + colorama.Fore.BLACK)
+    print(f"{colorama.Fore.BLUE}[Monitor]{colorama.Fore.GREEN}  Ready For Alerts...\n{colorama.Fore.BLACK}")
 
     while True:
         line = source_process.stdout.readline().decode("utf-8")
         decode = line.replace("b'EAS: ", "").replace("\n'", "").replace("'bEnabled Demodulators: EAS", "").replace('EAS:  ', '').replace('EAS: ', '').replace('Enabled demodulators: EAS', '')
 
         if "ZCZC-" in decode or "NNNN" in decode:
-            print(colorama.Fore.BLUE + "[Monitor]" + colorama.Fore.LIGHTBLACK_EX + "  Decoder: " + decode)
+            print(f"{colorama.Fore.BLUE}[Monitor]{colorama.Fore.LIGHTBLACK_EX}  Decoder: {decode}")
 
         if 'ZCZC-' in str(line):
             if ZCZC_test(decode) == True:
                 ZCZCheader = decode
-                print(colorama.Fore.BLUE + "[Monitor]" + colorama.Fore.LIGHTBLACK_EX + "  ZCZC Check OK")
+                print(f"{colorama.Fore.BLUE}[Monitor]{colorama.Fore.LIGHTBLACK_EX}  ZCZC Check OK")
 
-                discordlog(decode) #Log to discord
+
+                if(disclogenable):
+                    discordlog(decode) #Log to discord
                 
                 stop_threads = False
                 t1 = threading.Thread(target = record)
                 t1.start()
             else:
-                print(colorama.Fore.BLUE + "[Monitor]" + colorama.Fore.RED + "  WARNING: ZCZC Check FAILED!")
+                print(f"{colorama.Fore.BLUE}[Monitor]{colorama.Fore.RED}  WARNING: ZCZC Check FAILED!")
                 line = "NNNN"
         elif 'NNNN' not in str(last):
             if 'NNNN' in str(line):
                 stop_threads = True
                 t1.join()
 
-                print(colorama.Fore.BLUE + "[Monitor]" + colorama.Fore.LIGHTBLACK_EX + "  Stopped Recording Thread")
+                print(f"{colorama.Fore.BLUE}[Monitor]{colorama.Fore.LIGHTBLACK_EX}  Stopped Recording Thread")
 
                 rm_end()
                 rm_attn_tone()
@@ -355,16 +358,16 @@ if __name__ == "__main__":
                 writefile("com/alert_ZCZC.var", ZCZCheader) #Alert ZCZC str
 
                 if ready_stat() == True: #If processing alert
-                    print(colorama.Fore.BLUE + "[Monitor]" + colorama.Fore.LIGHTRED_EX + "  WARNING: PyDEC is processing an alert! Waiting...")
+                    print(f"{colorama.Fore.BLUE}[Monitor]{colorama.Fore.LIGHTRED_EX}  WARNING: PyDEC is processing an alert! Waiting...")
                     pydec_ready = False
                     while pydec_ready == False:
                         time.sleep(2)
                         if ready_stat() == False:
                             pydec_ready = True
-                            print(colorama.Fore.BLUE + "[Monitor]" + colorama.Fore.GREEN + "  Sending...")
+                            print(f"{colorama.Fore.BLUE}[Monitor]{colorama.Fore.GREEN}  Sending...")
 
                 writefile("com/alertready.var", "True")
 
-                print(colorama.Fore.BLUE + "[Monitor]" + colorama.Fore.GREEN + "  Alert Sent!\n\n")
+                print(f"{colorama.Fore.BLUE}[Monitor]{colorama.Fore.GREEN}  Alert Sent!\n\n")
 
         last = line

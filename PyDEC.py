@@ -1,7 +1,9 @@
-import time, sys, colorama, shutil, json
+import time, sys, colorama, shutil, json, threading, datetime, smtplib
 from EASGen import EASGen
 from EAS2Text import EAS2Text
 from discord_webhook import DiscordWebhook, DiscordEmbed
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 # PyDEC Written by Aaron s#8638 :3
 
 def gen_headers(ZCZC):
@@ -79,12 +81,62 @@ def discordlog(dis_ZCZC, alert_des):
     webhook.execute()
 
 
+def sendalertemail(easzczc:str):
+    alrdat = EAS2Text(sameData=easzczc, timeZone=timezone_offset)
+
+
+    x = datetime.datetime.now()
+
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = f"PyDEC: Alert Forwarded At {x.strftime('%X')}"
+    msg['From'] = gmail_user
+
+    if(type(sendto) == list):
+        msg['To'] = ",".join(sendto)
+    else:
+        msg['To'] = sendto
+
+
+    text = f"An Emergency Alert was forwarded at {x.strftime('%c')}\n{alrdat.EASText}\n{easzczc}"
+    html = f"""\
+    <html>
+      <head></head>
+      <body style="height: 100%; margin: 0; padding: 0; width: 100%; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; background-color: #474747;font-family: Arial, Helvetica, sans-serif;">
+        <h2 style="color: rgb(255, 0, 0);margin: 5px; margin-top:20px;">{staion} PyDEC Alert Logs</h2>
+        <hr>
+        <h3 style="margin: 10px; color: white;">An Emergency Alert was forwarded at {x.strftime('%c')}</h3>
+        <div style="margin: 10px; margin-top: 20px; padding: 4px; border: 3px solid #ff0000; border-radius: 10px; background-color: #3d3d3d; max-width: 800px; color: white;">
+            <h4>{alrdat.EASText}</h4>
+            <h4>{easzczc}</h4>
+        </div>
+        <hr>
+        <p style="color: rgb(255,0,0); margin: 10px; font-size: 12px; margin-bottom: 10px;">PyDEC EAS ENDEC</p>
+    </body>
+    </html>
+    """
+
+    part1 = MIMEText(text, 'plain')
+    part2 = MIMEText(html, 'html')
+
+    # RFC 2046, the last part of a multipart message is best and preferred.
+    msg.attach(part1)
+    msg.attach(part2)
+
+    mail = smtplib.SMTP(emailserver, emailserverport)
+    mail.ehlo()
+    mail.starttls()
+    mail.login(gmail_user, gmail_password)
+    mail.sendmail(gmail_user, sendto, msg.as_string())
+    mail.quit()
+    print(f"{colorama.Fore.BLUE}\n[PyDEC]{colorama.Fore.LIGHTBLACK_EX}  Email Log Sent")
+
+
 def addalertlst(ZCZC):
     ZCZC = ZCZC.split("-")
     ZCZC.pop(len(ZCZC) - 1)
     ZCZC.pop(len(ZCZC) - 1)
     ZCZC = '-'.join(ZCZC)
-    if(len(alrlist) > 4):
+    if(len(alrlist) > 50):
         alrlist.pop(0)
         alrlist.append(ZCZC)
     else:
@@ -217,16 +269,24 @@ if __name__ == "__main__":
 
     staion = str(config_data['callsign'])
 
-
+    disclogenable = config_data['enable_discord_logger']
     webhook_links = config_data['logger_webhook']
     webhook_username = config_data['webhook_username']
     embed_author = config_data['embed_author']
     embed_author_link = config_data['embed_author_link']
     timezone_offset = int(config_data['timezone_offset'])
 
+    emaillogenable = config_data['enable_email_logger']
+    emailserver = config_data['email_server']
+    emailserverport = config_data['email_server_port']
+    gmail_user = config_data['email_user']
+    gmail_password = config_data['email_user_pass']
+    sendto = config_data['email_sendto']
+
+
 
     print("\n[Setup]  Loaded Config")
-    print(colorama.Fore.BLUE + "\n[PyDEC]" + colorama.Fore.GREEN + "  Waiting For Alerts..." )
+    print(f"{colorama.Fore.BLUE}\n[PyDEC]{colorama.Fore.GREEN}  Waiting For Alerts..." )
 
     while True:
         time.sleep(3)
@@ -241,11 +301,16 @@ if __name__ == "__main__":
             else:
                 addalertlst(alert_ZCZC)
                 if readfile("audio/var/working.var") == "False":
-                    print(colorama.Fore.BLUE + "\n[PyDEC]" + colorama.Fore.LIGHTBLACK_EX + "  New Alert: " + alert_ZCZC)
+                    print(f"{colorama.Fore.BLUE}\n[PyDEC]{colorama.Fore.LIGHTBLACK_EX}  New Alert: {alert_ZCZC}")
 
                     alert_ZCZC = recompile_ZCZC(staion, alert_ZCZC)
 
-                    discordlog(alert_ZCZC,alert_description) #log to discord
+                    if(disclogenable):
+                        discordlog(alert_ZCZC,alert_description) #log to discord
+
+                    if(emaillogenable):
+                        ethread = threading.Thread(target = sendalertemail, args=(alert_ZCZC,)) #Log to email (async)
+                        ethread.start()
 
                     gen_headers(alert_ZCZC)
 
@@ -253,13 +318,18 @@ if __name__ == "__main__":
 
                     writefile("audio/var/new_audio.var", "True")
                 elif readfile("audio/var/working.var") == "True":
-                    print(colorama.Fore.BLUE + "\n[PyDEC]" + colorama.Fore.LIGHTBLACK_EX + "  New Alert: " + alert_ZCZC)
+                    print(f"{colorama.Fore.BLUE}\n[PyDEC]{colorama.Fore.LIGHTBLACK_EX}  New Alert: {alert_ZCZC}")
 
-                    print(colorama.Fore.BLUE + "[PyDEC]" + colorama.Fore.LIGHTRED_EX + "  Overriding Alert!")
+                    print(f"{colorama.Fore.BLUE}[PyDEC]{colorama.Fore.LIGHTRED_EX}  Overriding Alert!")
 
                     alert_ZCZC = recompile_ZCZC(staion, alert_ZCZC)
 
-                    discordlog(alert_ZCZC,alert_description) #log to discord
+                    if(disclogenable):
+                        discordlog(alert_ZCZC,alert_description) #log to discord
+
+                    if(emaillogenable):
+                        ethread = threading.Thread(target = sendalertemail, args=[alert_ZCZC]) #Log to email (async)
+                        ethread.start()
 
                     gen_headers(alert_ZCZC)
 

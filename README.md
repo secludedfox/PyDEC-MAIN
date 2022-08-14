@@ -107,9 +107,7 @@ This script is now waiting for alerts and will send then so the main script, whi
 <br />
 
 ## Release Notes
-- Added discord logging
-- Added a duplicate alert check
-- Fixed minor bugs
+- Added Email Logs
 
 If you have any isses or request(s) just send me a discord DM or add something under the "issues" tab 
 
