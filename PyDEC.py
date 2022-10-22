@@ -61,7 +61,7 @@ def discordlog(dis_ZCZC, alert_des):
     embed = DiscordEmbed(title="Emergency Alert Forwarded", description=alertmessage, color=embed_color)
     embed.set_thumbnail(url=alerticon)
     embed.set_author(name=embed_author, url=embed_author_link)
-    embed.set_image()
+    # embed.set_image() 
 
 
     if alert_des != "N/A":
@@ -328,7 +328,7 @@ if __name__ == "__main__":
                         discordlog(alert_ZCZC,alert_description) #log to discord
 
                     if(emaillogenable):
-                        ethread = threading.Thread(target = sendalertemail, args=[alert_ZCZC]) #Log to email (async)
+                        ethread = threading.Thread(target = sendalertemail, args=(alert_ZCZC,)) #Log to email (async)
                         ethread.start()
 
                     gen_headers(alert_ZCZC)
